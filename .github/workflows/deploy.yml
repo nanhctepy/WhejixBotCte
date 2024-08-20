@@ -1,4 +1,5 @@
-name: Project Whejix Bot
+name: Deploy Discord Bot
+
 on:
   push:
     branches:
@@ -28,4 +29,6 @@ jobs:
         pip install -r requirements.txt
     
     - name: Run bot
+      env:
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
       run: python botdis.py
