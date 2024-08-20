@@ -2,6 +2,7 @@ import random
 import asyncio
 import discord
 from colorama import Fore, Style
+from youtube_dl import YoutubeDL
 from time import sleep,strftime
 import requests
 import datetime
@@ -79,7 +80,7 @@ from bs4 import BeautifulSoup
 
 
 
-TOKEN = "MTIzOTg4MTAxMDgxMzA3NTUxNg.Gfkifo.o0SwQNsCvcddk6c-Fe5S1HiefWG1qruosaFK8o"
+TOKEN = "MTIzOTg4MTAxMDgxMzA3NTUxNg.GBo8hv.6J8T1SaQOJMY7R8WjGyP9Xm-6_sHATMX3E2cvg"
 PREFIX = "/"
 
 thoigianguitinnhan = 1 
@@ -1274,7 +1275,6 @@ async def bank(interaction: discord.Interaction, recipient: discord.User, amount
     embed.set_footer(text="Chúc bạn giao dịch vui vẻ!")
     
     await interaction.response.send_message(embed=embed)
-
 class VoiceChannelSelect(Select):
     def __init__(self, channels):
         options = [discord.SelectOption(label=channel.name, value=str(channel.id)) for channel in channels]
@@ -1287,20 +1287,29 @@ class VoiceChannelSelect(Select):
             await interaction.response.send_message("Không tìm thấy kênh thoại này!")
             return
 
-        if not os.path.isfile('xa.mp3'):
+        file_path = 'xa.mp3'
+        if not os.path.isfile(file_path):
             await interaction.response.send_message("Tệp âm thanh không tồn tại.")
             return
 
-        voice_bot = await channel.connect()
-        file_path = 'xa.mp3'
-        source = discord.FFmpegPCMAudio(file_path, executable='ffmpeg')
+        async def play_audio_loop():
+            voice_bot = await channel.connect()
+            while True:
+                source = discord.FFmpegPCMAudio(file_path, executable='ffmpeg')
 
-        def after_playing(error):
-            if error:
-                print('An error occurred while playing:', error)
+                def after_playing(error):
+                    if error:
+                        print(f"Đã có lỗi xảy ra khi phát âm thanh: {error}")
+                    # Khi âm thanh phát xong, tiếp tục phát lại
 
-        voice_bot.play(source, after=after_playing)
-        await interaction.response.send_message("Đang phát âm thanh trong kênh thoại!")
+                if voice_bot.is_playing():
+                    voice_bot.stop()
+                voice_bot.play(source, after=after_playing)
+                while voice_bot.is_playing():
+                    await asyncio.sleep(1)
+
+        bot.loop.create_task(play_audio_loop())
+        await interaction.response.send_message("Đang phát âm thanh liên tục trong kênh thoại!")
 
 @bot.tree.command(name="xa", description="Xả mic.")
 async def xa(interaction: discord.Interaction):
