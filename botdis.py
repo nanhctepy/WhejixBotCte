@@ -1287,6 +1287,10 @@ class VoiceChannelSelect(Select):
             await interaction.response.send_message("Không tìm thấy kênh thoại này!")
             return
 
+        if not os.path.isfile('xa.mp3'):
+            await interaction.response.send_message("Tệp âm thanh không tồn tại.")
+            return
+
         voice_bot = await channel.connect()
         file_path = 'xa.mp3'
         source = discord.FFmpegPCMAudio(file_path, executable='ffmpeg')
@@ -1294,10 +1298,9 @@ class VoiceChannelSelect(Select):
         def after_playing(error):
             if error:
                 print('An error occurred while playing:', error)
-            voice_bot.play(source, after=after_playing)
 
         voice_bot.play(source, after=after_playing)
-        await interaction.response.send_message("Đang phát âm thanh vô hạn trong kênh thoại!")
+        await interaction.response.send_message("Đang phát âm thanh trong kênh thoại!")
 
 @bot.tree.command(name="xa", description="Xả mic.")
 async def xa(interaction: discord.Interaction):
