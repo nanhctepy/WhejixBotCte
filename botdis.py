@@ -79,7 +79,8 @@ from bs4 import BeautifulSoup
 
 
 
-TOKEN = os.getenv('DISCORD_TOKEN')
+
+TOKEN = "MTIzOTg4MTAxMDgxMzA3NTUxNg.GBo8hv.6J8T1SaQOJMY7R8WjGyP9Xm-6_sHATMX3E2cvg"
 PREFIX = "/"
 
 thoigianguitinnhan = 1 
@@ -1093,10 +1094,6 @@ async def play(interaction: discord.Interaction):
         except Exception as e:
             await interaction.response.send_message(f"Lỗi kết nối: {e}", ephemeral=True)
             return
-    else:
-        # Stop the current playback if any
-        if voice_client.is_playing():
-            voice_client.stop()
 
     select = discord.ui.Select(
         placeholder="Chọn thể loại nhạc...",
@@ -1135,6 +1132,7 @@ async def play(interaction: discord.Interaction):
 
                     source = discord.FFmpegPCMAudio(file_path, executable='ffmpeg')
 
+
                     def after_playing(error):
                         if error:
                             print(f"Đã có lỗi xảy ra khi phát âm thanh: {error}")
@@ -1155,7 +1153,6 @@ async def play(interaction: discord.Interaction):
     view.add_item(select)
 
     await interaction.response.send_message("Chọn thể loại nhạc bạn muốn phát:", view=view, ephemeral=True)
-
 @bot.tree.command(name="stop", description="Dừng phát nhạc và rời khỏi kênh thoại")
 async def stop(interaction: discord.Interaction):
     global allow_admin
@@ -1283,7 +1280,7 @@ class VoiceChannelSelect(Select):
     def __init__(self, channels):
         options = [discord.SelectOption(label=channel.name, value=str(channel.id)) for channel in channels]
         super().__init__(placeholder='Chọn một kênh thoại...', options=options)
-    
+
     async def callback(self, interaction: discord.Interaction):
         channel_id = int(self.values[0])
         channel = bot.get_channel(channel_id)
@@ -1292,22 +1289,21 @@ class VoiceChannelSelect(Select):
             return
 
         voice_bot = await channel.connect()
-        source = discord.FFmpegPCMAudio('xa.mp3')
+        file_path = 'xa.mp3'
+        source = discord.FFmpegPCMAudio(file_path, executable='ffmpeg')
 
-        async def play_audio():
-            while True:
-                if not voice_bot.is_playing():
-                    voice_bot.play(source)
-                await asyncio.sleep(1)
+        def after_playing(error):
+            if error:
+                print('An error occurred while playing:', error)
+            voice_bot.play(source, after=after_playing)
 
-        bot.loop.create_task(play_audio())
+        voice_bot.play(source, after=after_playing)
         await interaction.response.send_message("Đang phát âm thanh vô hạn trong kênh thoại!")
 
 @bot.tree.command(name="xa", description="Xả mic.")
 async def xa(interaction: discord.Interaction):
-    # Get voice channels
     voice_channels = [channel for channel in interaction.guild.voice_channels]
-    
+
     if not voice_channels:
         await interaction.response.send_message("Không có kênh thoại nào trong server!")
         return
