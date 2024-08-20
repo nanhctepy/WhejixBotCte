@@ -1,0 +1,9 @@
+colorama
+requests
+pystyle
+imageio-ffmpeg
+discord.py
+youtube_dl
+PyNaCl
+nest_asyncio
+yt_dlp
