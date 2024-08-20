@@ -76,10 +76,7 @@ MAX_RETRIES = 3
 MAX_MESSAGES_BEFORE_CLEAR = 100
 from bs4 import BeautifulSoup
 
-
-
-
-TOKEN = "MTIzOTg4MTAxMDgxMzA3NTUxNg.GBo8hv.6J8T1SaQOJMY7R8WjGyP9Xm-6_sHATMX3E2cvg"
+TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = "/"
 
 thoigianguitinnhan = 1 
