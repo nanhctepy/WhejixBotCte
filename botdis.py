@@ -1094,6 +1094,10 @@ async def play(interaction: discord.Interaction):
         except Exception as e:
             await interaction.response.send_message(f"Lỗi kết nối: {e}", ephemeral=True)
             return
+    else:
+        # Stop the current playback if any
+        if voice_client.is_playing():
+            voice_client.stop()
 
     select = discord.ui.Select(
         placeholder="Chọn thể loại nhạc...",
@@ -1132,7 +1136,6 @@ async def play(interaction: discord.Interaction):
 
                     source = discord.FFmpegPCMAudio(file_path, executable='ffmpeg')
 
-
                     def after_playing(error):
                         if error:
                             print(f"Đã có lỗi xảy ra khi phát âm thanh: {error}")
@@ -1153,6 +1156,7 @@ async def play(interaction: discord.Interaction):
     view.add_item(select)
 
     await interaction.response.send_message("Chọn thể loại nhạc bạn muốn phát:", view=view, ephemeral=True)
+
 @bot.tree.command(name="stop", description="Dừng phát nhạc và rời khỏi kênh thoại")
 async def stop(interaction: discord.Interaction):
     global allow_admin
