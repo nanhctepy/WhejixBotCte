@@ -1072,8 +1072,9 @@ async def mute(interaction: discord.Interaction, member: discord.Member, duratio
 MUSIC_CATEGORIES = {
     'speedup': './speedup',
     'remix': './remix',
-    'lofi' : "./lofi",
+    'lofi': './lofi',
 }
+
 @bot.tree.command(name="play", description="Phát nhạc theo thể loại")
 async def play(interaction: discord.Interaction):
     global allow_admin
@@ -1131,12 +1132,10 @@ async def play(interaction: discord.Interaction):
 
                     source = discord.FFmpegPCMAudio(file_path, executable='ffmpeg')
 
-
                     def after_playing(error):
                         if error:
                             print(f"Đã có lỗi xảy ra khi phát âm thanh: {error}")
-                        if not voice_client.is_playing():
-                            voice_client.stop()
+                        # Không cần gọi stop ở đây vì chúng ta đã kiểm tra trong vòng lặp chính
 
                     if voice_client.is_playing():
                         voice_client.stop()
@@ -1152,6 +1151,7 @@ async def play(interaction: discord.Interaction):
     view.add_item(select)
 
     await interaction.response.send_message("Chọn thể loại nhạc bạn muốn phát:", view=view, ephemeral=True)
+
 @bot.tree.command(name="stop", description="Dừng phát nhạc và rời khỏi kênh thoại")
 async def stop(interaction: discord.Interaction):
     global allow_admin
