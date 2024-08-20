@@ -2,7 +2,6 @@ import random
 import asyncio
 import discord
 from colorama import Fore, Style
-from youtube_dl import YoutubeDL
 from time import sleep,strftime
 import requests
 import datetime
