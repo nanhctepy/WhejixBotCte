@@ -1,11 +1,12 @@
-name: Run Discord Bot Script
+name: Run Discord Bot
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Chạy vào phút 0 của mỗi 6 giờ
+    - cron: '*/30 * * * *'  # Chạy mỗi 30 phút
+  workflow_dispatch:  # Cho phép kích hoạt thủ công
 
 jobs:
-  run:
+  run-bot:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,4 +31,5 @@ jobs:
     - name: Run bot
       env:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-      run: python botdis.py
+      run: |
+        python botdis.py
