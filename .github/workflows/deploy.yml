@@ -1,8 +1,6 @@
 name: Run Discord Bot
 
 on:
-  schedule:
-    - cron: '*/30 * * * *'  # Chạy mỗi 30 phút
   workflow_dispatch:  # Cho phép kích hoạt thủ công
 
 jobs:
